@@ -82,6 +82,25 @@ def search_by_author(
     ]
 
 
+def export_books(
+    books: list[dict],
+    path: Path,
+) -> None:
+    lines = []
+
+    for index, book in enumerate(books, start=1):
+        lines.append(
+            f"{index}. {book['title']} - {book['author']}"
+        )
+
+    text = "\n".join(lines)
+
+    if text:
+        text += "\n"
+
+    path.write_text(text, encoding="utf-8")
+
+
 def build_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(description="Book catalog")
 
@@ -98,6 +117,13 @@ def build_parser() -> argparse.ArgumentParser:
 
     author_parser = subparsers.add_parser("author")
     author_parser.add_argument("query")
+
+    export_parser = subparsers.add_parser("export")
+    export_parser.add_argument(
+        "path",
+        nargs="?",
+        default="books_export.txt",
+    )
 
     return parser
 
@@ -132,6 +158,17 @@ def main() -> None:
             )
 
             print_books(result)
+
+        elif args.command == "export":
+            export_books(
+                books,
+                Path(args.path),
+            )
+
+            print(
+                f"Exported {len(books)} books "
+                f"to {args.path}"
+            )
 
     except (
         OSError,
