@@ -4,7 +4,7 @@ from pathlib import Path
 
 
 DATA_FILE = Path("books.json")
-MAX_BOOKS = 100
+MAX_BOOKS = 500
 
 
 def load_books(path: Path = DATA_FILE) -> list[dict]:
