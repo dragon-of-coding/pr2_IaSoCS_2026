@@ -91,6 +91,17 @@ def search_by_author(
         if query in book["author"].casefold()
     ]
 
+def find_by_isbn(
+    books: list[dict],
+    isbn: str,
+) -> dict | None:
+    isbn = isbn.strip()
+
+    for book in books:
+        if book.get("isbn", "") == isbn:
+            return book
+
+    return None
 
 def export_books(
     books: list[dict],
@@ -132,6 +143,9 @@ def build_parser() -> argparse.ArgumentParser:
     author_parser = subparsers.add_parser("author")
     author_parser.add_argument("query")
 
+    isbn_parser = subparsers.add_parser("isbn")
+    isbn_parser.add_argument("isbn")
+    
     export_parser = subparsers.add_parser("export")
     export_parser.add_argument(
         "path",
@@ -173,6 +187,20 @@ def main() -> None:
                     args.query,
                 )
             )
+
+        elif args.command == "isbn":
+            book = find_by_isbn(
+                books,
+                args.isbn,
+            )
+
+            if book is None:
+                print("Book not found.")
+            else:
+                print(
+                    f"{book['title']} - "
+                    f"{book['author']}"
+                )
 
         elif args.command == "export":
             export_books(
