@@ -19,3 +19,17 @@ python books.py list
 ```bash
 python books.py add "Dune" "Frank Herbert"
 ```
+
+## Поиск по автору
+
+```bash
+python books.py author "Herbert"
+```
+
+## Экспорт каталога
+
+```bash
+python books.py export
+```
+
+По умолчанию результат записывается в файл `books_export.txt`.
