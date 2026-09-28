@@ -13,3 +13,9 @@ python books.py list
 Рабочие данные хранятся в файле `books.json`.
 
 Пример структуры данных находится в `books.json.example`.
+
+## Добавление книги
+
+```bash
+python books.py add "Dune" "Frank Herbert"
+```
