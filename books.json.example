@@ -1,10 +1,12 @@
 [
   {
     "title": "Dune",
-    "author": "Frank Herbert"
+    "author": "Frank Herbert",
+    "isbn": "9780441172719"
   },
   {
     "title": "1984",
-    "author": "George Orwell"
+    "author": "George Orwell",
+    "isbn": "9780451524935"
   }
 ]

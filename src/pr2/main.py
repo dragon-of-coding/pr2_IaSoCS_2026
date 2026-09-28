@@ -39,19 +39,28 @@ def print_books(books: list[dict]) -> None:
         return
 
     for index, book in enumerate(books, start=1):
-        print(f"{index}. {book['title']} - {book['author']}")
+        isbn = book.get("isbn", "")
+
+        line = f"{index}. {book['title']} - {book['author']}"
+
+        if isbn:
+            line += f" [{isbn}]"
+
+        print(line)
 
 
 def add_book(
     books: list[dict],
     title: str,
     author: str,
+    isbn: str = "",
 ) -> dict:
     if len(books) >= MAX_BOOKS:
         raise ValueError("Catalog limit reached")
 
     title = title.strip()
     author = author.strip()
+    isbn = isbn.strip()
 
     if not title:
         raise ValueError("Title cannot be empty")
@@ -62,6 +71,7 @@ def add_book(
     book = {
         "title": title,
         "author": author,
+        "isbn": isbn,
     }
 
     books.append(book)
@@ -81,6 +91,17 @@ def search_by_author(
         if query in book["author"].casefold()
     ]
 
+def find_by_isbn(
+    books: list[dict],
+    isbn: str,
+) -> dict | None:
+    isbn = isbn.strip()
+
+    for book in books:
+        if book.get("isbn", "") == isbn:
+            return book
+
+    return None
 
 def export_books(
     books: list[dict],
@@ -114,10 +135,17 @@ def build_parser() -> argparse.ArgumentParser:
     add_parser = subparsers.add_parser("add")
     add_parser.add_argument("title")
     add_parser.add_argument("author")
+    add_parser.add_argument(
+        "--isbn",
+        default="",
+    )
 
     author_parser = subparsers.add_parser("author")
     author_parser.add_argument("query")
 
+    isbn_parser = subparsers.add_parser("isbn")
+    isbn_parser.add_argument("isbn")
+    
     export_parser = subparsers.add_parser("export")
     export_parser.add_argument(
         "path",
@@ -142,6 +170,7 @@ def main() -> None:
                 books,
                 args.title,
                 args.author,
+                args.isbn,
             )
 
             save_books(books)
@@ -152,12 +181,26 @@ def main() -> None:
             )
 
         elif args.command == "author":
-            result = search_by_author(
-                books,
-                args.query,
+            print_books(
+                search_by_author(
+                    books,
+                    args.query,
+                )
             )
 
-            print_books(result)
+        elif args.command == "isbn":
+            book = find_by_isbn(
+                books,
+                args.isbn,
+            )
+
+            if book is None:
+                print("Book not found.")
+            else:
+                print(
+                    f"{book['title']} - "
+                    f"{book['author']}"
+                )
 
         elif args.command == "export":
             export_books(
