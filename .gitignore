@@ -1,0 +1,5 @@
+__pycache__/
+*.pyc
+.venv/
+books.json
+books_export.txt
