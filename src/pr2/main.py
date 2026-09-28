@@ -69,6 +69,19 @@ def add_book(
     return book
 
 
+def search_by_author(
+    books: list[dict],
+    query: str,
+) -> list[dict]:
+    query = query.casefold()
+
+    return [
+        book
+        for book in books
+        if query in book["author"].casefold()
+    ]
+
+
 def build_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(description="Book catalog")
 
@@ -77,18 +90,14 @@ def build_parser() -> argparse.ArgumentParser:
         required=True,
     )
 
-    subparsers.add_parser(
-        "list",
-        help="Show all books",
-    )
+    subparsers.add_parser("list")
 
-    add_parser = subparsers.add_parser(
-        "add",
-        help="Add a book",
-    )
-
+    add_parser = subparsers.add_parser("add")
     add_parser.add_argument("title")
     add_parser.add_argument("author")
+
+    author_parser = subparsers.add_parser("author")
+    author_parser.add_argument("query")
 
     return parser
 
@@ -115,6 +124,14 @@ def main() -> None:
                 f"Added: {book['title']} - "
                 f"{book['author']}"
             )
+
+        elif args.command == "author":
+            result = search_by_author(
+                books,
+                args.query,
+            )
+
+            print_books(result)
 
     except (
         OSError,
